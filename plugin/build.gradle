@@ -11,13 +11,16 @@ plugins {
     id 'eclipse'
     id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version "1.2.1"
+    id 'maven-publish'
 }
 
 def defaultEncoding = 'UTF-8'
 def pluginVersion = '2.1.0'
+def groupId = 'com.matsuyoido'
+def artifactId = 'frontend'
 
 version = "$pluginVersion"
-group = 'com.matsuyoido'
+group = "$groupId"
 
 jar {
 	archiveBaseName = "matsuyoido-frontend-gradle-plugin"
@@ -106,12 +109,21 @@ gradlePlugin {
 
     plugins {
         frontEndPlugin {
-            id = 'com.matsuyoido.frontend'
+            id = "$groupId.$artifactId"
             displayName = 'This plugin support preparation of deliverables.'
             description = 'scss -> css | css -> min.css | js -> min.js'
             version = "$pluginVersion"
             tags = ['preprocessor', 'scss', 'minify']
             implementationClass = 'com.matsuyoido.plugin.frontend.MainPlugin'
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "localGithubRepo"
+            url = uri("${projectDir}/../../maven-repo")
         }
     }
 }
