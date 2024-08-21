@@ -1,10 +1,9 @@
 buildscript {
     ext {
-        pluginVersion = '2.0.2'
+        pluginVersion = '2.1.0'
         jarName = 'matsuyoido-frontend-gradle-plugin'
-        gradleVersion = '5.5.1'
-        jdkVersion = JavaVersion.VERSION_1_8
-        // jdkVersion = JavaVersion.VERSION_11
+        gradleVersion = '8.10'
+        jdkVersion = JavaVersion.VERSION_17
         assertJVersion = '3.11.1'
         defaultEncoding = 'UTF-8'
     }
@@ -16,7 +15,7 @@ buildscript {
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.11.0"
-        classpath "com.matsuyoido:frontend-plugin:2.0.2"
+        classpath "com.matsuyoido:frontend-plugin:2.1.0"
     }
 }
 
