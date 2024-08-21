@@ -1,6 +1,8 @@
 # gradle-frontend-plugin
 
-https://plugins.gradle.org/plugin/com.matsuyoido.frontend
+https://plugins.gradle.org/plugin/com.matsuyoido.frontend (official version)
+
+This fork upgrades the plugin being compatible with Java 17 and Gradle 8.10, but does not add, alter or remove functionality.
 
 ## Feature
 
