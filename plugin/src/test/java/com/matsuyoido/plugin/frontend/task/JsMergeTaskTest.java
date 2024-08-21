@@ -1,48 +1,45 @@
+
 package com.matsuyoido.plugin.frontend.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
 // import java.io.File;
 
-// import com.matsuyoido.plugin.PathUtil;
+import java.nio.file.Path;
 
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import org.gradle.testfixtures.ProjectBuilder;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.gradle.work.InputChanges;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 
 /**
  * JsMergeTaskTest
  */
-@Ignore("TaskのテストはPlugin の結合テストで担保することとする")
+@Disabled("TaskのテストはPlugin の結合テストで担保することとする")
 public class JsMergeTaskTest {
 
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+	@TempDir
+	public Path tempFolder;
 
-    // private static final String SOURCE_FILE_DIR = PathUtil.classpathResourcePath("mergeCompile");
+	// private static final String SOURCE_FILE_DIR = PathUtil.classpathResourcePath("mergeCompile");
 
-    private IncrementalTaskInputs inputs = new MockIncrementalTaskInputs();
-    private JsMergeTask task = ProjectBuilder.builder()
-                                               .build()
-                                               .getTasks().create("test", JsMergeTask.class);
+	private final InputChanges inputChanges	= new MockInputChanges();
+	private final JsMergeTask  task			= ProjectBuilder.builder().build().getTasks().create("test", JsMergeTask.class);
 
-    @Before
-    public void setup() {
-        // task.setJsMapDirectory(new File(SOURCE_FILE_DIR))
-        //     .setOutputFileDirectory(tempFolder.getRoot());
-    }
+	@BeforeEach
+	public void setup() {
+		// task.setJsMapDirectory(new File(SOURCE_FILE_DIR))
+		// .setOutputFileDirectory(tempFolder.getRoot());
+	}
 
-    @Test
-    public void mergeJavascript() {
-        task.mergeJavascript(inputs);
+	@Test
+	public void mergeJavascript() {
+		task.mergeJavascript(inputChanges);
 
-        assertThat(tempFolder.getRoot().listFiles()).allSatisfy(file -> {
-            assertThat(file).isFile()
-                            .hasName("test.min.js")
-                            .hasContent("'use strict';function Test(){this.name=0};const test=\"\";");
-        });
-    }
+		assertThat(tempFolder.toFile().listFiles()).allSatisfy(file -> {
+			assertThat(file).isFile().hasName("test.min.js").hasContent("'use strict';function Test(){this.name=0};const test=\"\";");
+		});
+	}
 }

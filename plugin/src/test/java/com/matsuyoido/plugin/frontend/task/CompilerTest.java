@@ -1,3 +1,4 @@
+
 package com.matsuyoido.plugin.frontend.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,100 +9,100 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import com.matsuyoido.plugin.PathUtil;
 
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 /**
  * CompilerTest
  */
-@Ignore("TaskのテストはPlugin の結合テストで担保することとする")
+@Disabled("TaskのテストはPlugin の結合テストで担保することとする")
 public class CompilerTest {
 
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+	@TempDir
+	public Path tempFolder;
 
-    @Test
-    public void getTargets_startsWith_Exclude() throws IOException {
-        // case
-        Compiler compiler = new Compiler("css", "glob:[!_]*.scss", null, false) {
-            @Override
-            protected String compile(Path filePath) {
-                return null;
-            }
-        };
-        String directory = PathUtil.classpathResourcePath("sassCompile");
+	@Test
+	public void getTargets_startsWith_Exclude() throws IOException {
+		// case
+		final Compiler compiler = new Compiler("css", "glob:[!_]*.scss", null, false) {
+			@Override
+			protected String compile(final Path filePath) {
+				return null;
+			}
+		};
+		final String directory = PathUtil.classpathResourcePath("sassCompile");
 
-        // execute
-        Set<Path> result = compiler.getTargets(new File(directory));
-        
-        int expectFileCount = 2;
-        assertThat(result).hasSize(expectFileCount);
-    }
+		// execute
+		final Set<Path> result = compiler.getTargets(new File(directory));
 
-    @Test
-    public void getTargets_minFileExclude() throws IOException {
-        Compiler compiler = new Compiler("css", "glob:*.css", Collections.singleton("glob:*.min.css"), false) {
-            @Override
-            protected String compile(Path filePath) {
-                return null;
-            }
-        };
-        String directory = PathUtil.classpathResourcePath("minCompile");
+		final int expectFileCount = 2;
+		assertThat(result).hasSize(expectFileCount);
+	}
 
-        // execute
-        Set<Path> result = compiler.getTargets(new File(directory));
-        
-        int expectFileCount = 2;
-        assertThat(result).hasSize(expectFileCount);
-    }
+	@Test
+	public void getTargets_minFileExclude() throws IOException {
+		final Compiler compiler = new Compiler("css", "glob:*.css", Collections.singleton("glob:*.min.css"), false) {
+			@Override
+			protected String compile(final Path filePath) {
+				return null;
+			}
+		};
+		final String directory = PathUtil.classpathResourcePath("minCompile");
 
-    @Test
-    public void convertToOutputPath_nest() {
-        // case
-        String rootPath = "src/main/hogehoge";
-        Path inputRootPath = new File(rootPath).toPath();//Path.of(rootPath);
-        Path outputRootPath = new File("src/test/hogehoge").toPath();//Path.of("src/test/hogehoge");
-        Path inputFilePath = new File(rootPath, "test/test.tmp").toPath();//Path.of(rootPath, "test/test.tmp");
+		// execute
+		final Set<Path> result = compiler.getTargets(new File(directory));
 
-        Compiler compiler = new TestCompiler();
+		final int expectFileCount = 2;
+		assertThat(result).hasSize(expectFileCount);
+	}
 
-        // execute
-        Path result = compiler.convetToOutputPath(inputRootPath, outputRootPath, inputFilePath);
+	@Test
+	public void convertToOutputPath_nest() {
+		// case
+		final String rootPath = "src/main/hogehoge";
+		final Path inputRootPath = new File(rootPath).toPath();// Path.of(rootPath);
+		final Path outputRootPath = new File("src/test/hogehoge").toPath();// Path.of("src/test/hogehoge");
+		final Path inputFilePath = new File(rootPath, "test/test.tmp").toPath();// Path.of(rootPath, "test/test.tmp");
 
-        Path expect = new File("src/test/hogehoge", "test/test.tmp").toPath();// Path.of("src/test/hogehoge", "test/test.tmp");
-        assertThat(result.toString()).isEqualTo(expect.toString());
-    }
+		final Compiler compiler = new TestCompiler();
 
-    @Test
-    public void outputFile() throws IOException {
-        // case
-        File outputDirectory = tempFolder.newFolder("compiledFolder");
-        File outputFile = File.createTempFile("prefix", ".tmp", outputDirectory);
-        String writeContent = "content";
+		// execute
+		final Path result = compiler.convetToOutputPath(inputRootPath, outputRootPath, inputFilePath);
 
-        Compiler compiler = new TestCompiler();
+		final Path expect = new File("src/test/hogehoge", "test/test.tmp").toPath();// Path.of("src/test/hogehoge", "test/test.tmp");
+		assertThat(result.toString()).isEqualTo(expect.toString());
+	}
 
-        // execute
-        compiler.outputFile(outputFile, writeContent);
+	@Test
+	public void outputFile() throws IOException {
+		// case
+		final File outputDirectory = tempFolder.resolve("compiledFolder").toFile();
+		outputDirectory.mkdir();
+		final File outputFile = File.createTempFile("prefix", ".tmp", outputDirectory);
+		final String writeContent = "content";
 
-        assertThat(outputFile).hasContent(writeContent);
-    }
+		final Compiler compiler = new TestCompiler();
 
+		// execute
+		compiler.outputFile(outputFile, writeContent);
 
-    private class TestCompiler extends Compiler {
+		assertThat(outputFile).hasContent(writeContent);
+	}
 
-        public TestCompiler() {
-            super("tmp", "", null, false);
-        }
+	private class TestCompiler extends Compiler {
 
-        @Override
-        protected String compile(Path filePath) {
-            return null;
-        }
+		public TestCompiler() {
+			super("tmp", "", null, false);
+		}
 
-    }
+		@Override
+		protected String compile(final Path filePath) {
+			return null;
+		}
+
+	}
 }
